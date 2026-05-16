@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scrum Poker</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a1f29'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-size='24' font-family='Arial' font-weight='900' fill='%234bd38a'%3ESP%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="static/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="joinPanel" class="join-panel">
+        <div class="brand-mark">SP</div>
+        <p class="eyebrow">Planning poker para equipos</p>
+        <h1>Scrum Poker</h1>
+        <div class="join-grid">
+          <label>
+            Tu nombre
+            <input id="nameInput" maxlength="28" autocomplete="name" placeholder="Ej: Nico">
+          </label>
+          <label>
+            Codigo de sala
+            <input id="roomInput" maxlength="24" placeholder="Ej: SPRINT-12">
+          </label>
+          <button id="joinBtn" type="button">Entrar a la sala</button>
+        </div>
+      </section>
+
+      <section id="roomPanel" class="room-panel hidden">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Sala <span id="roomCode"></span></p>
+            <h1 id="storyTitle">Ronda sin historia</h1>
+          </div>
+          <div class="top-actions">
+            <button id="shareBtn" class="share-button" type="button">Compartir sala</button>
+            <div class="round-pill">Ronda <strong id="roundNumber">1</strong></div>
+          </div>
+        </header>
+
+        <section class="table-zone" aria-live="polite">
+          <div id="confetti" class="confetti" aria-hidden="true"></div>
+          <div id="resultOrb" class="result-orb waiting">
+            <span id="resultLabel">Esperando votos</span>
+            <strong id="resultValue">?</strong>
+          </div>
+          <div id="voters" class="voters"></div>
+        </section>
+
+        <section class="controls">
+          <div class="story-row">
+            <input id="storyInput" maxlength="80" placeholder="Historia o tarea a estimar">
+            <button id="newRoundBtn" type="button">Nueva ronda</button>
+            <button id="revealBtn" type="button">Revelar</button>
+          </div>
+          <div id="cards" class="cards" aria-label="Cartas de estimacion"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="static/app.js"></script>
+  </body>
+</html>
