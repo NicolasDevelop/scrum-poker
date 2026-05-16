@@ -66,36 +66,3 @@ http://127.0.0.1:8000
 6. Cuando todos hayan votado, presiona `Revelar`.
 7. La app muestra el promedio y el resultado redondeado hacia abajo a Fibonacci.
 8. Para estimar otra historia, escribe el nombre de la tarea y presiona `Nueva ronda`.
-
-## Importante sobre GitHub Pages
-
-Esta app necesita un servidor para que varias personas compartan la misma sala en tiempo real.
-
-GitHub Pages solo sirve archivos estaticos, por eso no es suficiente para mantener las salas sincronizadas.
-
-GitHub sirve para guardar el codigo. Para usar la app online con tu equipo, debes desplegarla en un hosting que ejecute Python, por ejemplo:
-
-- Render
-- Railway
-- Fly.io
-- Un VPS
-
-## Despliegue
-
-En un hosting compatible con Python, el comando de inicio es:
-
-```text
-python app.py
-```
-
-El proyecto incluye un `Procfile`:
-
-```text
-web: python app.py
-```
-
-Si el hosting entrega una variable `PORT`, la app la usa automaticamente.
-
-## Notas
-
-La informacion de las salas se guarda en memoria mientras el servidor esta corriendo. Si el servidor se reinicia, las salas activas se limpian.
