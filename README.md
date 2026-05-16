@@ -67,15 +67,6 @@ http://127.0.0.1:8000
 7. La app muestra el promedio y el resultado redondeado hacia abajo a Fibonacci.
 8. Para estimar otra historia, escribe el nombre de la tarea y presiona `Nueva ronda`.
 
-## Subir a GitHub usando la UI
-
-1. Crea un repositorio nuevo en GitHub.
-2. Entra al repositorio.
-3. Presiona `Add file` y luego `Upload files`.
-4. Arrastra el contenido de la carpeta `scrum-poker`.
-5. Verifica que `app.py`, `index.html`, `Procfile`, `README.md` y la carpeta `static` queden en la raiz del repositorio.
-6. Presiona `Commit changes`.
-
 ## Importante sobre GitHub Pages
 
 Esta app necesita un servidor para que varias personas compartan la misma sala en tiempo real.
