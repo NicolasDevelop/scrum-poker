@@ -8,6 +8,7 @@ No usa login ni registro. Cada integrante escribe su nombre, entra a una sala po
 
 - Salas por codigo compartible.
 - Lobby inicial para crear una sala nueva o entrar a una sala activa.
+- Eliminacion de salas activas desde el lobby.
 - Entrada sin login.
 - Nombre visible para identificar quien voto.
 - Votos ocultos hasta revelar.
@@ -66,6 +67,7 @@ http://127.0.0.1:8000
 5. Cuando todos hayan votado, presiona `Revelar`.
 6. La app muestra el promedio y el resultado redondeado hacia abajo a Fibonacci.
 7. Para estimar otra historia, escribe el nombre de la tarea y presiona `Nueva ronda`.
+8. Para limpiar el lobby, usa `Eliminar` sobre una sala activa.
 
 ## Subir a GitHub usando la UI
 

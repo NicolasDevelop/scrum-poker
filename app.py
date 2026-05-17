@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent
 ROOM_CODE_RE = re.compile(r"[^A-Z0-9-]")
 FIBONACCI = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
 rooms = {}
+deleted_rooms = set()
 lock = threading.Lock()
 
 
@@ -133,6 +134,9 @@ class ScrumPokerHandler(SimpleHTTPRequestHandler):
             query = urllib.parse.parse_qs(parsed.query)
             code = clean_room_code(query.get("code", [""])[0])
             with lock:
+                if code in deleted_rooms:
+                    self.send_json({"error": "Sala eliminada"}, status=404)
+                    return
                 room = ensure_room(code)
                 self.send_json(room_payload(room))
             return
@@ -151,6 +155,7 @@ class ScrumPokerHandler(SimpleHTTPRequestHandler):
             name = clean_name(data.get("name", ""))
             voter_id = data.get("id") or uuid4().hex
             with lock:
+                deleted_rooms.discard(code)
                 room = ensure_room(code)
                 existing = room["voters"].get(voter_id, {})
                 room["voters"][voter_id] = {
@@ -188,6 +193,19 @@ class ScrumPokerHandler(SimpleHTTPRequestHandler):
                 room["revealed"] = True
                 room["updated_at"] = now()
                 self.send_json(room_payload(room))
+            return
+
+        if parsed.path == "/api/delete-room":
+            code = clean_room_code(data.get("code", ""))
+            with lock:
+                rooms.pop(code, None)
+                deleted_rooms.add(code)
+                active_rooms = sorted(
+                    [room_summary(room) for room in rooms.values()],
+                    key=lambda item: item["updatedAt"],
+                    reverse=True,
+                )
+                self.send_json({"deleted": code, "rooms": active_rooms[:24]})
             return
 
         if parsed.path == "/api/reset":

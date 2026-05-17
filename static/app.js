@@ -19,6 +19,7 @@ const joinBtn = $("#joinBtn");
 const createRoomBtn = $("#createRoomBtn");
 const refreshRoomsBtn = $("#refreshRoomsBtn");
 const roomList = $("#roomList");
+const lobbyNotice = $("#lobbyNotice");
 const roomCode = $("#roomCode");
 const storyTitle = $("#storyTitle");
 const roundNumber = $("#roundNumber");
@@ -48,6 +49,14 @@ function api(path, body) {
     }
     return response.json();
   });
+}
+
+function showLobbyNotice(message) {
+  lobbyNotice.textContent = message;
+  lobbyNotice.classList.remove("hidden");
+  setTimeout(() => {
+    lobbyNotice.classList.add("hidden");
+  }, 3600);
 }
 
 function normalizeCode(value) {
@@ -203,24 +212,43 @@ function renderRoomList(rooms) {
   }
 
   rooms.forEach((room) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "room-option";
+    const item = document.createElement("article");
+    item.className = "room-option";
+
+    const enter = document.createElement("button");
+    enter.type = "button";
+    enter.className = "room-enter";
     const code = document.createElement("strong");
     code.textContent = room.code;
     const details = document.createElement("span");
-    details.textContent = `${room.story || "Sin historia"} · Ronda ${room.round} · ${roomStatus(room)}`;
-    button.append(code, details);
-    button.addEventListener("click", () => {
+    details.textContent = `${room.story || "Sin historia"} - Ronda ${room.round} - ${roomStatus(room)}`;
+    enter.append(code, details);
+    enter.addEventListener("click", () => {
       roomInput.value = room.code;
       joinRoom(room.code);
     });
-    roomList.append(button);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "delete-room-button";
+    remove.textContent = "Eliminar";
+    remove.addEventListener("click", async () => {
+      const shouldDelete = window.confirm(`Eliminar la sala ${room.code}?`);
+      if (!shouldDelete) return;
+      const response = await api("/api/delete-room", { code: room.code });
+      renderRoomList(response.rooms);
+      if (roomInput.value === room.code) roomInput.value = "";
+      showLobbyNotice(`Sala ${room.code} eliminada`);
+    });
+
+    item.append(enter, remove);
+    roomList.append(item);
   });
 }
 
 async function joinRoom(codeOverride = "") {
   ensureAudio();
+  lobbyNotice.classList.add("hidden");
   state.name = nameInput.value.trim() || "Sin nombre";
   state.code = normalizeCode(codeOverride || roomInput.value);
   state.myVote = null;
@@ -238,7 +266,21 @@ async function joinRoom(codeOverride = "") {
 async function poll() {
   if (!state.code || roomPanel.classList.contains("hidden")) return;
   const response = await fetch(`/api/room?code=${encodeURIComponent(state.code)}`, { cache: "no-store" });
-  if (response.ok) render(await response.json());
+  if (response.ok) {
+    render(await response.json());
+    return;
+  }
+  if (response.status === 404) {
+    const deletedCode = state.code;
+    state.room = null;
+    state.code = "";
+    state.myVote = null;
+    history.replaceState(null, "", location.pathname);
+    roomPanel.classList.add("hidden");
+    joinPanel.classList.remove("hidden");
+    showLobbyNotice(`La sala ${deletedCode} fue eliminada`);
+    await loadRooms();
+  }
 }
 
 joinBtn.addEventListener("click", () => joinRoom());
