@@ -8,6 +8,7 @@ const state = {
   myVote: null,
   soundReady: false,
   audio: null,
+  highAverageAudio: null,
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -34,6 +35,8 @@ const storyInput = $("#storyInput");
 const confetti = $("#confetti");
 const shareBtn = $("#shareBtn");
 const changeRoomBtn = $("#changeRoomBtn");
+const roomNameInput = $("#roomNameInput");
+const saveNameBtn = $("#saveNameBtn");
 
 nameInput.value = state.name;
 roomInput.value = state.code || localStorage.getItem("scrumPokerRoom") || "";
@@ -86,7 +89,17 @@ function ensureAudio() {
   if (!state.audio) {
     state.audio = new AudioContext();
   }
+  if (!state.highAverageAudio) {
+    state.highAverageAudio = new Audio("static/faaah.mp3");
+    state.highAverageAudio.preload = "auto";
+  }
   state.soundReady = true;
+}
+
+function playHighAverageAudio() {
+  if (!state.soundReady || !state.highAverageAudio) return;
+  state.highAverageAudio.currentTime = 0;
+  state.highAverageAudio.play().catch(() => {});
 }
 
 function beep(type = "tap") {
@@ -189,7 +202,11 @@ function render(room) {
   renderVoters(room);
   renderResult(room);
   if (isNewReveal) {
-    beep("reveal");
+    if (room.average >= 5) {
+      playHighAverageAudio();
+    } else {
+      beep("reveal");
+    }
     popConfetti();
   }
 }
@@ -250,6 +267,7 @@ async function joinRoom(codeOverride = "") {
   ensureAudio();
   lobbyNotice.classList.add("hidden");
   state.name = nameInput.value.trim() || "Sin nombre";
+  roomNameInput.value = state.name;
   state.code = normalizeCode(codeOverride || roomInput.value);
   state.myVote = null;
   localStorage.setItem("scrumPokerName", state.name);
@@ -294,6 +312,34 @@ nameInput.addEventListener("keydown", (event) => {
 });
 roomInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") joinRoom();
+});
+
+async function saveName() {
+  const nextName = roomNameInput.value.trim() || "Sin nombre";
+  saveNameBtn.disabled = true;
+  try {
+    const nextRoom = await api("/api/update-name", {
+      code: state.code,
+      id: state.voterId,
+      name: nextName,
+    });
+    state.name = nextName;
+    nameInput.value = nextName;
+    roomNameInput.value = nextName;
+    localStorage.setItem("scrumPokerName", nextName);
+    saveNameBtn.textContent = "Guardado";
+    render(nextRoom);
+  } finally {
+    saveNameBtn.disabled = false;
+    setTimeout(() => {
+      saveNameBtn.textContent = "Guardar";
+    }, 1400);
+  }
+}
+
+saveNameBtn.addEventListener("click", saveName);
+roomNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") saveName();
 });
 
 changeRoomBtn.addEventListener("click", () => {

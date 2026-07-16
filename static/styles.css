@@ -254,6 +254,31 @@ input:focus {
   align-items: center;
 }
 
+.name-editor {
+  display: grid;
+  grid-template-columns: minmax(110px, 150px) auto;
+  gap: 6px;
+  align-items: end;
+}
+
+.name-editor label {
+  grid-column: 1 / -1;
+  font-size: 0.72rem;
+}
+
+.name-editor input {
+  min-height: 42px;
+}
+
+.name-editor button {
+  min-height: 42px;
+  border-radius: 8px;
+  background: var(--green);
+  color: #0c1510;
+  padding: 0 12px;
+  font-weight: 900;
+}
+
 .share-button {
   min-height: 42px;
   border: 1px solid rgba(99, 199, 255, 0.4);
@@ -470,7 +495,22 @@ input:focus {
   }
 
   .top-actions {
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .name-editor {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .top-actions .share-button {
+    white-space: normal;
+  }
+
+  .round-pill {
+    grid-column: 1 / -1;
+    text-align: center;
   }
 
   .result-orb {

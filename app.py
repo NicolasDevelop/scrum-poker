@@ -186,6 +186,21 @@ class ScrumPokerHandler(SimpleHTTPRequestHandler):
                 self.send_json(room_payload(room))
             return
 
+        if parsed.path == "/api/update-name":
+            code = clean_room_code(data.get("code", ""))
+            voter_id = data.get("id", "")
+            name = clean_name(data.get("name", ""))
+            with lock:
+                room = rooms.get(code)
+                if room is None or voter_id not in room["voters"]:
+                    self.send_json({"error": "Participante no encontrado"}, status=404)
+                    return
+                room["voters"][voter_id]["name"] = name
+                room["voters"][voter_id]["last_seen"] = now()
+                room["updated_at"] = now()
+                self.send_json(room_payload(room))
+            return
+
         if parsed.path == "/api/reveal":
             code = clean_room_code(data.get("code", ""))
             with lock:
