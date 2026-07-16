@@ -4,6 +4,10 @@ Aplicacion web simple para hacer sesiones de Planning Poker con equipos Scrum.
 
 No usa login ni registro. Cada integrante escribe su nombre, entra a una sala por codigo y vota con cartas de la secuencia Fibonacci.
 
+## Aplicacion desplegada
+
+[Abrir Scrum Poker en Render](https://scrum-poker-k8zc.onrender.com/)
+
 ## Caracteristicas
 
 - Salas por codigo compartible.
@@ -11,12 +15,14 @@ No usa login ni registro. Cada integrante escribe su nombre, entra a una sala po
 - Eliminacion de salas activas desde el lobby.
 - Entrada sin login.
 - Nombre visible para identificar quien voto.
+- Edicion del nombre dentro de la sala.
 - Votos ocultos hasta revelar.
 - Cartas con secuencia Fibonacci: `0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89`.
 - Promedio de la votacion.
 - Resultado redondeado hacia abajo respetando Fibonacci.
 - Boton para compartir el link de la sala.
 - Sonidos en las acciones principales.
+- Audio especial cuando el promedio es igual o mayor a 5.
 - Efecto de confetti al revelar los votos.
 - Interfaz responsive para computador y celular.
 
@@ -26,6 +32,7 @@ No usa login ni registro. Cada integrante escribe su nombre, entra a una sala po
 scrum-poker/
   static/
     app.js
+    faaah.mp3
     styles.css
   .gitignore
   .nojekyll
